@@ -1,9 +1,12 @@
 #include <iostream>
 #include "tools.h"
 
+using namespace std;
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
 using std::vector;
+#define EPS1 0.0001 // A very small number
+#define EPS2 0.0000001
 
 Tools::Tools() {}
 
@@ -45,7 +48,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 }
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
-	/**
+	/*
 	TODO:
 	* Calculate a Jacobian here.
 	*/
@@ -54,13 +57,13 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	float py = x_state(1);
 	float vx = x_state(2);
 	float vy = x_state(3);
-	MatrixXd Hj(3,4);
+	MatrixXd J(3,4);
 	// Deal with the special case problems
-	if (fabs(px) < EPS and fabs(py) < EPS){
-		px = EPS;
-		py = EPS;
+	if (fabs(px) < EPS1 and fabs(py) < EPS1){
+		px = EPS1;
+		py = EPS1;
 	}
-	// Pre-compute a set of terms to avoid repeated calculation
+	// Avoid repeated calculation
 	float c1 = px*px+py*py;
 	// Check division by zero
 	if(fabs(c1) < EPS2){
@@ -69,9 +72,9 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	float c2 = sqrt(c1);
 	float c3 = (c1*c2);
 	// Compute the Jacobian matrix
-	Hj << (px/c2), (py/c2), 0, 0,
+	J << (px/c2), (py/c2), 0, 0,
 	   -(py/c1), (px/c1), 0, 0,
 	    py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
-	return Hj;
+	return J;
 
 }
