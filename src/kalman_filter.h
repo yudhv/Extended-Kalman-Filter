@@ -66,6 +66,8 @@ public:
 
   void KF(const Eigen::VectorXd &y);
 
+  void NormalizeAngle(double *pValue);
+
 };
 
 #endif /* KALMAN_FILTER_H_ */

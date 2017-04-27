@@ -39,6 +39,14 @@ void KalmanFilter::Update(const VectorXd &z) {
   KF(y);
 }
 
+void KalmanFilter::NormalizeAngle(double *pValue)
+{
+  if (fabs(*pValue) > M_PI)
+  {
+    *pValue -= round(*pValue / (2.0 * M_PI)) * (2.0 * M_PI);
+  }
+}
+
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
   TODO:
@@ -54,9 +62,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd y = z - h;
   if(abs(y(1))>=M_PI)
   {
-    cout<<"Phi "<<y(1)<<endl;
-    cout<<"Theta "<<theta<<endl;
-    y(1)=0.0;
+    NormalizeAngle(&y(1));
   }
   // Calculations are essentially the same to the Update function
   KF(y);
